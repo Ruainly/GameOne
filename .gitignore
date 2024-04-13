@@ -1,0 +1,10 @@
+/[lL]ibrary/
+/.vs/
+/.vsconfig/
+*.csproj
+/GameOne.sln/
+/obj/
+/UserSettings/
+/Logs/
+/Library/
+/Temp/
