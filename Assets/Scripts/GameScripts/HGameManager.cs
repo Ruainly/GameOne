@@ -50,7 +50,7 @@ public class HGameManager : MonoBehaviour
             var index = emptyIndex + step[Random.Range(0, 4)];
             if (index < 8 && index >= 0)
             {
-                pieces[index].GetComponent<HBlock>().OnMouseDown();
+                //pieces[index].GetComponent<HBlock>().OnMouseDown();
                 i++;
             }
             emptyIndex = index;

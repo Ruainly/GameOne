@@ -13,6 +13,8 @@ public class HuaRongDaoController : MonoBehaviour
     float alpha = 0;
 
     bool GStart, Over;
+
+    Transform CurrentOne, NextOne,Buildings;
     void Start()
     {
 
@@ -20,43 +22,46 @@ public class HuaRongDaoController : MonoBehaviour
 
     private void OnEnable()
     {
+        Buildings = GameObject.Find("SmallWorlBuildings").transform;
         StartGame();
     }
 
     public void StartGame()
     {
-        Array = new int[] { 1, 2, 6, 7, 4, 5, 8, 3, 9 };
-        Order = new int[] { 1, 2, 9, 4, 5, 6, 7, 8, 3 };
+        Array = new int[] { 1, 2, 6, 7, 4, 5, 8, 3, 9 };//乱序
+        Order = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         //A_random(Array, 16);//随机排序
 
-        for (int i = 0; i < transform.Find("table").childCount; i++) {
-            if (!transform.Find("table").GetChild(i).TryGetComponent<HuaRongDao>(out HuaRongDao huaRongDao))
+        for (int i = 0; i < Buildings.childCount; i++) {
+            if (!Buildings.GetChild(i).TryGetComponent<HuaRongDao>(out HuaRongDao huaRongDao))
             {
-                transform.Find("table").GetChild(i).gameObject.AddComponent<HuaRongDao>();
+                Buildings.GetChild(i).gameObject.AddComponent<HuaRongDao>();
                 if (i == 8)
                 {
-                    P_sequence(Array);
-                    Debug.LogError("11");
+                    //P_sequence(Array);
+                    Debug.Log("地图控制器解密开始");
                 }
             }
         }
 
-        GStart = true;
-        DOTween.To(() => alpha, x => alpha = x, 1, 1);
-        DOVirtual.DelayedCall(1, () =>
-        {
-            GStart = false;
-        });
+        //2D
+        //GStart = true;
+        //DOTween.To(() => alpha, x => alpha = x, 1, 1);
+        //DOVirtual.DelayedCall(1, () =>
+        //{
+        //    GStart = false;
+        //});
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GStart == true || Over == true)
-        {
-            transform.GetComponent<CanvasGroup>().alpha = alpha;
-        }
+        //2D
+        //if (GStart == true || Over == true)
+        //{
+        //    transform.GetComponent<CanvasGroup>().alpha = alpha;
+        //}
 
         //检测是否还原成功
         if (Enumerable.SequenceEqual(Array, Order))
@@ -66,7 +71,6 @@ public class HuaRongDaoController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift)&& Input.GetKey(KeyCode.LeftControl)&& Input.GetKey(KeyCode.F))
         {
-            Debug.LogError("111");
             RestoreSuccess();
         }
     }
@@ -102,7 +106,12 @@ public class HuaRongDaoController : MonoBehaviour
         foreach (int num in a)
         {
             string name = num.ToString();
-            GameObject.Find(name).transform.SetSiblingIndex(-1);
+            CurrentOne = GameObject.Find(name).transform;
+            NextOne = CurrentOne.parent.GetChild(CurrentOne.GetSiblingIndex() + 1).transform;
+            CurrentOne.SetSiblingIndex(-1);
+            Vector3 temp = CurrentOne.position;
+            CurrentOne.position = NextOne.position;
+            NextOne.position = temp;
         }
     }
 
@@ -129,14 +138,15 @@ public class HuaRongDaoController : MonoBehaviour
     void RestoreSuccess()
     {
         //成功
-        Over = true;
-        DOTween.To(() => alpha, x => alpha = x, 0, 1);
-        DOVirtual.DelayedCall(1, () =>
-        {
-            Over = false;
-            transform.gameObject.SetActive(false);
-        });
-        Debug.Log("成功");
+        //2D
+        //Over = true;
+        //DOTween.To(() => alpha, x => alpha = x, 0, 1);
+        //DOVirtual.DelayedCall(1, () =>
+        //{
+        //    Over = false;
+        //    transform.gameObject.SetActive(false);
+        //});
+        Debug.Log("解密结束");
         GameObject.Find("Root").GetComponent<FlowController>().HuaRongDaoFinishi();
     }
 }

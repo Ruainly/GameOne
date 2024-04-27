@@ -11,12 +11,15 @@ using Random = UnityEngine.Random;
 public class HuaRongDao : MonoBehaviour
 {
     HuaRongDaoController _HuaRongDaoController;
+    Transform Buildings;
+
+    Vector3 TempPos;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.LogError("2");
-        _HuaRongDaoController = transform.parent.parent.GetComponent<HuaRongDaoController>();
-        transform.GetComponent<Button>().onClick.AddListener(() => Getsiblingindex(Convert.ToInt16(transform.gameObject.name) - 1));
+        _HuaRongDaoController = GameObject.Find("HuaRongDao").GetComponent<HuaRongDaoController>();
+        Buildings = GameObject.Find("SmallWorlBuildings").transform;
+        //transform.GetComponent<Button>().onClick.AddListener(() => Getsiblingindex(Convert.ToInt16(transform.gameObject.name) - 1));
     }
 
     /// <summary> 
@@ -25,7 +28,7 @@ public class HuaRongDao : MonoBehaviour
     /// <param name="num"></param> 
     public void Getsiblingindex(int num)
     {
-        int s = transform.parent.GetChild(num).GetSiblingIndex();
+        int s = Buildings.GetChild(num).GetSiblingIndex();
         A_exchange(s+1);
     }
 
@@ -35,7 +38,7 @@ public class HuaRongDao : MonoBehaviour
     /// <param name="x">点击图块的索引值</param> 
     void A_exchange(int x)
     {
-        int index = GameObject.Find("9").transform.GetSiblingIndex() + 1;
+        int index = Buildings.Find("9").transform.GetSiblingIndex() + 1;
         Debug.LogError("按下");
         if (((index + 1 == x) && !(index % 3 == 0)) || ((index - 1 == x) && !(index % 3 == 1)) || (index + 3 == x) && (index < 7) || (index - 3 == x) && (index > 3))
         {
@@ -44,6 +47,9 @@ public class HuaRongDao : MonoBehaviour
             int temp = _HuaRongDaoController.Array[x - 1];
             _HuaRongDaoController.Array[x - 1] = _HuaRongDaoController.Array[index - 1];
             _HuaRongDaoController.Array[index - 1] = temp;
+            TempPos = Buildings.Find("9").position;
+            Buildings.Find("9").position = Buildings.Find(x.ToString()).position;
+            Buildings.Find(x.ToString()).position = TempPos;
             P_sequence(_HuaRongDaoController.Array);
         }
     }
@@ -60,5 +66,14 @@ public class HuaRongDao : MonoBehaviour
             string name = num.ToString();
             GameObject.Find(name).transform.SetSiblingIndex(-1);
         }
+    }
+
+    /// <summary>
+    /// 建筑点击方法
+    /// </summary>
+    public void OnMouseDown()
+    {
+        Debug.LogError(11111);
+        Getsiblingindex(Convert.ToInt16(transform.gameObject.name) - 1);
     }
 }
