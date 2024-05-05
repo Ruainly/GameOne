@@ -29,6 +29,7 @@ public class Step1_CollectProPerTry_lanterns : MonoBehaviour
             {
                 transform.GetComponent<CharacterControl>().enabled = false;
                 transform.GetComponent<CharacterController>().enabled = false;
+                Cursor.visible = true;
                 //transform.Find("Main Camera").GetComponent<ViewController>().enabled = false;
                 transform.Find("Plane").gameObject.SetActive(true);
                 CameraShouldHere.SetActive(true);

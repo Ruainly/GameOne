@@ -12,6 +12,8 @@ public class HuaRongDao : MonoBehaviour
 {
     HuaRongDaoController _HuaRongDaoController;
     Transform Buildings;
+    bool CanClick=true;
+    float Interval=0;
 
     Vector3 TempPos;
     // Start is called before the first frame update
@@ -23,33 +25,29 @@ public class HuaRongDao : MonoBehaviour
     }
 
     /// <summary> 
-    /// 获取数字num对应Array的索引值和table子物体的索引值 
-    /// </summary> 
-    /// <param name="num"></param> 
-    public void Getsiblingindex(int num)
-    {
-        int s = Buildings.GetChild(num).GetSiblingIndex();
-        A_exchange(s+1);
-    }
-
-    /// <summary> 
     /// 判断【数字9（白板）】上下左右的项的索引值，如果是被点击的x，则交换两个索引值里的数据，然后调用函数刷新面板里图块的顺序 
     /// </summary> 
-    /// <param name="x">点击图块的索引值</param> 
+    /// <param name="x">点击图块的索引值</param> -
     void A_exchange(int x)
     {
         int index = Buildings.Find("9").transform.GetSiblingIndex() + 1;
-        Debug.LogError("按下");
-        if (((index + 1 == x) && !(index % 3 == 0)) || ((index - 1 == x) && !(index % 3 == 1)) || (index + 3 == x) && (index < 7) || (index - 3 == x) && (index > 3))
+        //Debug.LogError("index: "+index);
+        //Debug.LogError("x: " + x);
+        if (((index + 1 == x) && !(index % 3 == 0)) || ((index - 1 == x) && !(index % 3 == 1)) || (index + 3 == x) || (index - 3 == x))
         {
-            Debug.LogError("Index白板9:" + index);
-            Debug.LogError("序号+1版本:" + x);
+            transform.Find("Particle_BuildingMove").GetComponent<ParticleSystem>().Play();
+            transform.parent.GetComponent<AudioSource>().Play();
+            DOVirtual.DelayedCall(1.1f, () =>
+            {
+                transform.parent.GetComponent<AudioSource>().Stop();
+            });
+            transform.parent.GetComponent<AudioSource>().DOPause();
             int temp = _HuaRongDaoController.Array[x - 1];
             _HuaRongDaoController.Array[x - 1] = _HuaRongDaoController.Array[index - 1];
             _HuaRongDaoController.Array[index - 1] = temp;
             TempPos = Buildings.Find("9").position;
-            Buildings.Find("9").position = Buildings.Find(x.ToString()).position;
-            Buildings.Find(x.ToString()).position = TempPos;
+            Buildings.Find("9").DOMove(transform.position, 1);
+            transform.DOMove(TempPos,1);
             P_sequence(_HuaRongDaoController.Array);
         }
     }
@@ -67,13 +65,27 @@ public class HuaRongDao : MonoBehaviour
             GameObject.Find(name).transform.SetSiblingIndex(-1);
         }
     }
-
-    /// <summary>
-    /// 建筑点击方法
-    /// </summary>
-    public void OnMouseDown()
+    
+    public void BuildDingClick()
     {
-        Debug.LogError(11111);
-        Getsiblingindex(Convert.ToInt16(transform.gameObject.name) - 1);
+        if (CanClick == true)
+        {
+            CanClick = false;
+            A_exchange(transform.GetSiblingIndex() + 1);
+            //Debug.Log(transform.name +"被点击");
+        }
+    }
+
+    private void Update()
+    {
+        if (CanClick == false)
+        {
+            Interval += Time.deltaTime;
+            if (Interval >= 1.15f)
+            {
+                CanClick = true;
+                Interval = 0;
+            }
+        }
     }
 }

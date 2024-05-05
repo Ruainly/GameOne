@@ -25,6 +25,7 @@ public class ViewController : MonoBehaviour
     {
         // 初始化当前的垂直角度
         rotVer = transform.eulerAngles.x;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame

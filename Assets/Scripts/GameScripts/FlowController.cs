@@ -27,6 +27,7 @@ public class FlowController : MonoBehaviour
     public void HuaRongDaoFinishi()
     {
         SciFiTownGuard.SetActive(false);
+        Cursor.visible = false;
         //transform.GetComponent<CharacterControl>().enabled = false;
         //transform.GetComponent<CharacterController>().enabled = false;
         //transform.Find("Player/Main Camera").gameObject.SetActive(true);

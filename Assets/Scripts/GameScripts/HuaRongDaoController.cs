@@ -13,11 +13,12 @@ public class HuaRongDaoController : MonoBehaviour
     float alpha = 0;
 
     bool GStart, Over;
+    Camera camera;
 
     Transform CurrentOne, NextOne,Buildings;
     void Start()
     {
-
+        camera = GameObject.Find("SmallWorldCamera").GetComponent<Camera>();
     }
 
     private void OnEnable()
@@ -28,7 +29,7 @@ public class HuaRongDaoController : MonoBehaviour
 
     public void StartGame()
     {
-        Array = new int[] { 1, 2, 6, 7, 4, 5, 8, 3, 9 };//乱序
+        Array = new int[] { 1, 2, 3, 4, 5, 6, 7, 9, 8 };//乱序{ 1, 2, 6, 7, 4, 5, 8, 3, 9 }
         Order = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         //A_random(Array, 16);//随机排序
 
@@ -62,6 +63,19 @@ public class HuaRongDaoController : MonoBehaviour
         //{
         //    transform.GetComponent<CanvasGroup>().alpha = alpha;
         //}
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.tag == "SmallWorld")
+                {
+                    hit.collider.GetComponent<HuaRongDao>().BuildDingClick();
+                }
+            }
+        }
 
         //检测是否还原成功
         if (Enumerable.SequenceEqual(Array, Order))
@@ -147,6 +161,10 @@ public class HuaRongDaoController : MonoBehaviour
         //    transform.gameObject.SetActive(false);
         //});
         Debug.Log("解密结束");
-        GameObject.Find("Root").GetComponent<FlowController>().HuaRongDaoFinishi();
+        DOVirtual.DelayedCall(1.5f, () =>
+        {
+            GameObject.Find("Root").GetComponent<FlowController>().HuaRongDaoFinishi();
+            this.enabled = false;
+        });
     }
 }
