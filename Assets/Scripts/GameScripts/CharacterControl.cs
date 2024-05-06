@@ -26,6 +26,8 @@ public class CharacterControl : MonoBehaviour
     private float moveSpeed;
     // 用于存储当前的角色控件
     private CharacterController character;
+    //角色动画控制器
+    Animator animator;
 
 
     public float sensitivityHor = 3f;
@@ -37,13 +39,14 @@ public class CharacterControl : MonoBehaviour
         character =transform.GetComponent<CharacterController>();
         verSpeed = minFall;
         moveSpeed = walkSpeed;
+        animator = transform.Find("Body").GetComponent<Animator>();
     }
     // 每更新一帧时执行
     void Update()
     {
         float mouseHor = Input.GetAxis("Mouse X");
         float rotHor = transform.localEulerAngles.y + mouseHor * sensitivityHor;
-        transform.localEulerAngles = new Vector3(0, rotHor, 0);
+        //transform.localEulerAngles = new Vector3(0, rotHor, 0);
 
         // 用于存储移动信息
         Vector3 movement = Vector3.zero;
@@ -54,6 +57,8 @@ public class CharacterControl : MonoBehaviour
         // 当发生了移动才执行
         if (horspeed != 0 || verspeed != 0)
         {
+            animator.SetBool("walk", true);
+            transform.localEulerAngles = new Vector3(0, rotHor, 0);
             // 设置左右位置
             movement.x = horspeed * moveSpeed;
             // 设置前后的位置
@@ -62,6 +67,10 @@ public class CharacterControl : MonoBehaviour
             movement = Vector3.ClampMagnitude(movement, moveSpeed);
             // 将移动的信息转化为以摄像机为全局坐标的位置，即保证你向前走一定是摄像机的视角方向
             movement = target.TransformDirection(movement);
+        }
+        else
+        {
+            animator.SetBool("walk", false);
         }
         // 当按下左 shift 是跟换速度
         if (Input.GetKey(KeyCode.LeftShift))

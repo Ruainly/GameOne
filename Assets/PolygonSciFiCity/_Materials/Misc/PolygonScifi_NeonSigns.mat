@@ -4,13 +4,15 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: PolygonScifi_NeonSigns
-  m_Shader: {fileID: 4800000, guid: 0835602ed30128f4a88a652bf920fcaa, type: 3}
+  m_Shader: {fileID: 4800000, guid: 635c1feff29c4104cbecb3050ed126e3, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -77,6 +79,7 @@ Material:
     - _BumpScale: 0.5
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _DirtAmount: 1
     - _DstBlend: 0
     - _FallOff: 8.19
     - _GlossMapScale: 1
@@ -97,3 +100,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 4, g: 4, b: 4, a: 0}
+  m_BuildTextureStacks: []
