@@ -8,28 +8,58 @@ using UnityEngine.UI;
 public class HuaRongDaoController : MonoBehaviour
 {
     public int[] Array;
-    private int[] Order;
-
+    private int[] Order,Ori;
     float alpha = 0;
-
     bool GStart, Over;
-    Camera camera;
+    Vector3[] BuildingPos = new Vector3[9];
 
-    Transform CurrentOne, NextOne,Buildings;
+    Camera camera;
+    Button ResetBtn;
+    CanvasGroup Arrow;
+    Transform CurrentOne, NextOne,Buildings, Panel;
     void Start()
     {
-        camera = GameObject.Find("SmallWorldCamera").GetComponent<Camera>();
+        //Panel=transform.Find("Panel");
+        //camera = GameObject.Find("SmallWorldCamera").GetComponent<Camera>();
+        //ResetBtn = Panel.Find("ResetButton").GetComponent<Button>();
+
+        //ResetBtn.onClick.AddListener(() =>
+        //{
+        //    P_sequence(Ori);
+        //});
     }
 
     private void OnEnable()
     {
         Buildings = GameObject.Find("SmallWorlBuildings").transform;
+        Panel = transform.Find("Panel");
+        camera = GameObject.Find("SmallWorldCamera").GetComponent<Camera>();
+        Arrow = Panel.Find("Arrow").GetComponent<CanvasGroup>();
+        ResetBtn = Panel.Find("ResetButton").GetComponent<Button>();
+        for (int k=0; k < 9; k++)
+        {
+            BuildingPos[k] = GameObject.Find("SmallWorlBuildings").transform.GetChild(k).transform.position;
+            //Debug.LogError("BuildingPos[" + k + "]: " + BuildingPos[k]);
+        }
+
         StartGame();
+        ResetBtn.onClick.AddListener(() =>
+        {
+            Array=Ori;
+            P_sequence(Array);
+            for (int k = 0; k < 9; k++)
+            {
+                 GameObject.Find("SmallWorlBuildings").transform.GetChild(k).transform.position= BuildingPos[k];
+                 //Debug.LogError("position:  " + GameObject.Find("SmallWorlBuildings").transform.GetChild(k).transform.position);
+            }
+        });
     }
 
     public void StartGame()
     {
+        Panel.gameObject.SetActive(true);
         Array = new int[] { 1, 2, 3, 4, 5, 6, 7, 9, 8 };//ÂÒÐò{ 1, 2, 6, 7, 4, 5, 8, 3, 9 }
+        Ori = new int[] { 1, 2, 3, 4, 5, 6, 7, 9, 8 };
         Order = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         //A_random(Array, 16);//Ëæ»úÅÅÐò
 
@@ -63,6 +93,26 @@ public class HuaRongDaoController : MonoBehaviour
         //{
         //    transform.GetComponent<CanvasGroup>().alpha = alpha;
         //}
+
+        if (Arrow.gameObject.activeSelf == true)
+        {
+            if (Arrow.alpha == 1)
+            {
+                DOTween.To(() => Arrow.alpha, x => Arrow.alpha = x, 0, 0.5f);
+                if (Arrow.alpha < 0.01f)
+                {
+                    Arrow.alpha = 0;
+                }
+            }
+            if(Arrow.alpha==0)
+            {
+                DOTween.To(() => Arrow.alpha, x => Arrow.alpha = x, 1, 0.5f);
+                if (Arrow.alpha > 0.99f)
+                {
+                    Arrow.alpha = 1;
+                }
+            }
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -117,15 +167,10 @@ public class HuaRongDaoController : MonoBehaviour
     /// <param name="a">ÂÒÐòÊý×é</param> 
     void P_sequence(int[] a)
     {
-        foreach (int num in a)
+        for(int i = 0; i < a.Length; i++)
         {
-            string name = num.ToString();
-            CurrentOne = GameObject.Find(name).transform;
-            NextOne = CurrentOne.parent.GetChild(CurrentOne.GetSiblingIndex() + 1).transform;
-            CurrentOne.SetSiblingIndex(-1);
-            Vector3 temp = CurrentOne.position;
-            CurrentOne.position = NextOne.position;
-            NextOne.position = temp;
+            string name = a[i].ToString();
+            GameObject.Find(name).transform.SetSiblingIndex(i);
         }
     }
 
@@ -164,6 +209,7 @@ public class HuaRongDaoController : MonoBehaviour
         DOVirtual.DelayedCall(1.5f, () =>
         {
             GameObject.Find("Root").GetComponent<FlowController>().HuaRongDaoFinishi();
+            transform.Find("Panel").gameObject.SetActive(false);
             this.enabled = false;
         });
     }

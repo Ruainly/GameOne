@@ -15,6 +15,7 @@ public class Step0_StartVideo : MonoBehaviour
         Canvas=transform.Find("Canvas");
         VideoPlayer = Canvas.Find("Video").gameObject;
         BlackScreen = Canvas.Find("BlackScreen").GetComponent<CanvasGroup>();
+        Cursor.visible = false;
     }
 
     public void OnVideoEvent(MediaPlayer mp, MediaPlayerEvent.EventType et, ErrorCode er)

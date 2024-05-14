@@ -48,6 +48,7 @@ public class HuaRongDao : MonoBehaviour
             TempPos = Buildings.Find("9").position;
             Buildings.Find("9").DOMove(transform.position, 1);
             transform.DOMove(TempPos,1);
+            _HuaRongDaoController.transform.Find("Panel/Arrow").gameObject.SetActive(false);
             P_sequence(_HuaRongDaoController.Array);
         }
     }
@@ -57,7 +58,7 @@ public class HuaRongDao : MonoBehaviour
     /// </summary> 
     /// <param name="gameObject">table</param> 
     /// <param name="a">乱序数组</param> 
-    void P_sequence(int[] a)
+    public void P_sequence(int[] a)
     {
         foreach (int num in a)
         {
@@ -72,7 +73,6 @@ public class HuaRongDao : MonoBehaviour
         {
             CanClick = false;
             A_exchange(transform.GetSiblingIndex() + 1);
-            //Debug.Log(transform.name +"被点击");
         }
     }
 

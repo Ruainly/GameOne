@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class CharacterControl : MonoBehaviour
     // 获取摄像机对象的位置信息，[SerializeField] 类似于 java 的构造方法的方法参数
     [SerializeField] private Transform target;
     // 跳起来的速度
-    public float jumpSpeed = 15.0f;
+    public float jumpSpeed = 8.0f;
     // 重力
     public float gravity = -9.8f;
     // 最终垂直速度
@@ -29,6 +30,8 @@ public class CharacterControl : MonoBehaviour
     //角色动画控制器
     Animator animator;
 
+    float mouseHor, mouseVer;
+
 
     public float sensitivityHor = 3f;
 
@@ -44,7 +47,9 @@ public class CharacterControl : MonoBehaviour
     // 每更新一帧时执行
     void Update()
     {
-        float mouseHor = Input.GetAxis("Mouse X");
+        mouseHor = Input.GetAxis("Mouse X");
+        mouseVer = Input.GetAxis("Mouse Y");
+
         float rotHor = transform.localEulerAngles.y + mouseHor * sensitivityHor;
         //transform.localEulerAngles = new Vector3(0, rotHor, 0);
 
@@ -57,8 +62,21 @@ public class CharacterControl : MonoBehaviour
         // 当发生了移动才执行
         if (horspeed != 0 || verspeed != 0)
         {
+            //if (horspeed == 0)
+            //{
+            //    animator.SetBool("walk", true);
+            //}else if (horspeed > 0)
+            //{
+            //    //animator.SetBool("right", true);
+            //    //animator.SetBool("left", false);
+            //}
+            //else
+            //{
+            //    //animator.SetBool("left", true);
+            //    //animator.SetBool("right", false);
+            //}
             animator.SetBool("walk", true);
-            transform.localEulerAngles = new Vector3(0, rotHor, 0);
+
             // 设置左右位置
             movement.x = horspeed * moveSpeed;
             // 设置前后的位置
@@ -67,6 +85,11 @@ public class CharacterControl : MonoBehaviour
             movement = Vector3.ClampMagnitude(movement, moveSpeed);
             // 将移动的信息转化为以摄像机为全局坐标的位置，即保证你向前走一定是摄像机的视角方向
             movement = target.TransformDirection(movement);
+
+            //角色转向
+            //transform.localEulerAngles = new Vector3(0, rotHor, 0);
+            float targetRotation = (Mathf.Atan2(mouseHor, mouseVer) * Mathf.Rad2Deg + target.eulerAngles.y);
+            transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref moveSpeed, 0.1f, 2000, Time.deltaTime);
         }
         else
         {

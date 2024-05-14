@@ -7,6 +7,7 @@ TagManager:
   - YearTittle
   - ProPertry_lantern
   - SmallWorld
+  - Ground
   layers:
   - Default
   - TransparentFX
